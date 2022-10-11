@@ -3,29 +3,17 @@ import { useEffect, useRef, useState } from "react";
 const SimpleInput = (props) => {
   const nameInputRef = useRef();
   const [enteredName, setEnteredName] = useState("");
-  const [enteredNameIsValid, setEnteredNameIsValid] = useState(false);
   const [enteredNameTouched, setEnteredNameTouched] = useState(false);
 
-  useEffect(() => {
-    if (enteredNameIsValid) {
-      console.log("Name input is valid");
-    }
-  }, [enteredNameIsValid]);
+  const enteredNameIsValid = enteredName.trim() !== "";
+  const nameInputIsValid = !enteredNameIsValid && enteredNameTouched;
 
   const nameInputChangeHandler = (event) => {
     setEnteredName(event.target.value);
-
-    if (event.target.value.trim() !== "") {
-      setEnteredNameIsValid(true);
-    }
   };
 
   const nameInputBlurHandler = (event) => {
     setEnteredNameTouched(true);
-
-    if (enteredName.trim() === "") {
-      setEnteredNameIsValid(false);
-    }
   };
 
   const formSubmissionHandler = (event) => {
@@ -33,12 +21,9 @@ const SimpleInput = (props) => {
 
     setEnteredNameTouched(true);
 
-    if (enteredName.trim() === "") {
-      setEnteredNameIsValid(false);
+    if (!enteredNameIsValid) {
       return;
     }
-
-    setEnteredNameIsValid(true);
 
     console.log(enteredName);
     const enteredValue = nameInputRef.current.value;
@@ -47,9 +32,8 @@ const SimpleInput = (props) => {
     // nameInputRef.current.value = ""; //NOT => DON'T MANIPULATE DOM
 
     setEnteredName("");
+    setEnteredNameTouched(false);
   };
-
-  const nameInputIsValid = !enteredNameIsValid && enteredNameTouched;
 
   const nameInputClasses = nameInputIsValid
     ? "form-control invalid"
